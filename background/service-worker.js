@@ -11,11 +11,17 @@ const webClient = new GeminiWebClient();
 
 // 1. Extension Installation & Setup
 chrome.runtime.onInstalled.addListener(async () => {
-  // Create context menu for text selection
-  chrome.contextMenus.create({
-    id: "summarizeSelectionWithGemini",
-    title: "Tóm tắt bằng Gemini",
-    contexts: ["selection"]
+  // Create context menu for text selection cleanly
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({
+      id: "summarizeSelectionWithGemini",
+      title: "Tóm tắt bằng Gemini",
+      contexts: ["selection"]
+    }, () => {
+      if (chrome.runtime.lastError) {
+        // Suppress benign duplicate id warning if race condition occurs
+      }
+    });
   });
 
   // Inject content scripts into already open tabs

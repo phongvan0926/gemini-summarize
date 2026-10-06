@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        { "header": "origin", "operation": "set", "value": "https://gemini.google.com" },
+        { "header": "referer", "operation": "set", "value": "https://gemini.google.com/" },
+        { "header": "sec-fetch-site", "operation": "set", "value": "same-origin" },
+        { "header": "sec-fetch-mode", "operation": "set", "value": "cors" }
+      ]
+    },
+    "condition": {
+      "urlFilter": "||gemini.google.com",
+      "resourceTypes": ["xmlhttprequest", "sub_frame", "other"]
+    }
+  }
+]

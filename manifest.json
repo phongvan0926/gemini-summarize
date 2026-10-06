@@ -1,0 +1,72 @@
+{
+  "manifest_version": 3,
+  "name": "Gemini Summarize - Tóm tắt website & video bằng Gemini",
+  "description": "Tóm tắt thông minh nội dung trang web và video YouTube bằng tài khoản Google Gemini đã đăng nhập sẵn trực tiếp trên trang.",
+  "version": "1.0.0",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    },
+    "default_title": "Tóm tắt trang này bằng Gemini"
+  },
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting",
+    "contextMenus",
+    "cookies",
+    "webRequest",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "*://*/*",
+    "https://gemini.google.com/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/readability.js", "content/content-script.js"],
+      "css": ["content/content-styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "popup/index.html",
+        "popup/popup.css",
+        "popup/popup.js",
+        "popup/lib/marked.min.js",
+        "icons/*"
+      ],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules/declarative_net_request.json"
+      }
+    ]
+  },
+  "options_ui": {
+    "page": "options/index.html",
+    "open_in_tab": true
+  }
+}

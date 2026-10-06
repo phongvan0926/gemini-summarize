@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Gemini Summarize</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header with Drag Handle -->
+    <header class="header" id="drag-header">
+      <div class="header-left">
+        <div class="logo-wrapper">
+          <svg class="gemini-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z" fill="url(#geminiGradHeader)"/>
+            <defs>
+              <linearGradient id="geminiGradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4E8CFF"/>
+                <stop offset="50%" stop-color="#7B61FF"/>
+                <stop offset="100%" stop-color="#FF5C93"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="app-title">Gemini Summarize</span>
+      </div>
+      <div class="header-actions">
+        <button id="btn-options" class="icon-btn" title="Cài đặt">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+        <button id="btn-close" class="icon-btn close-btn" title="Đóng">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Controls Toolbar -->
+    <div class="toolbar">
+      <div class="select-group">
+        <label for="prompt-select" class="sr-only">Mẫu tóm tắt</label>
+        <select id="prompt-select" class="select-control">
+          <optgroup label="Tự động & Phổ biến">
+            <option value="auto">🧠 Tự động thông minh (Auto)</option>
+            <option value="bulletpoints">📝 Ý chính (Bullet points)</option>
+            <option value="tldr">⚡ TL;DR (3 câu siêu ngắn)</option>
+            <option value="takeaways">💡 Bài học & Hành động</option>
+            <option value="detailed">📖 Toàn diện & Chi tiết</option>
+          </optgroup>
+          <optgroup label="Học tập & Ghi nhớ sâu">
+            <option value="feynman">👶 Kỹ thuật Feynman (Dễ hiểu)</option>
+            <option value="mindmap">🗺️ Cấu trúc tư duy (Logic)</option>
+            <option value="flashcard">❓ Flashcards & Tự ôn tập</option>
+            <option value="critical">📊 Phân tích phản biện</option>
+          </optgroup>
+          <optgroup id="custom-prompts-group" label="Câu lệnh tùy chỉnh">
+          </optgroup>
+          <optgroup label="Khác">
+            <option value="custom">✍️ Nhập câu lệnh trực tiếp...</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="select-group lang-group">
+        <label for="lang-select" class="sr-only">Ngôn ngữ</label>
+        <select id="lang-select" class="select-control">
+          <option value="Vietnamese">🇻🇳 Tiếng Việt</option>
+          <option value="English">🇺🇸 English</option>
+          <option value="Chinese">🇨🇳 中文</option>
+          <option value="Japanese">🇯🇵 日本語</option>
+          <option value="Korean">🇰🇷 한국어</option>
+          <option value="French">🇫🇷 Français</option>
+          <option value="Spanish">🇪🇸 Español</option>
+          <option value="German">🇩🇪 Deutsch</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Custom Prompt Input (hidden by default) -->
+    <div id="custom-prompt-container" class="custom-prompt-wrapper hidden">
+      <input type="text" id="custom-prompt-input" placeholder="Nhập câu hỏi hoặc yêu cầu tóm tắt..." />
+    </div>
+
+    <!-- Content Source Badge -->
+    <div class="source-bar">
+      <span class="source-icon">📄</span>
+      <span id="source-title" class="source-title">Đang đọc nội dung trang...</span>
+    </div>
+
+    <!-- Summary Content / Output Area -->
+    <main class="content-area" id="content-scroll">
+      <!-- Loading State -->
+      <div id="loading-state" class="state-container hidden">
+        <div class="gemini-pulse-loader">
+          <div class="pulse-ring"></div>
+          <div class="pulse-core"></div>
+        </div>
+        <p class="loading-text" id="loading-msg">Gemini đang phân tích và tóm tắt...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="state-container hidden">
+        <div class="error-icon">⚠️</div>
+        <h4 id="error-title">Không thể tạo tóm tắt</h4>
+        <p id="error-message" class="error-text"></p>
+        <div class="error-actions">
+          <button id="btn-login-gemini" class="btn btn-primary hidden">👉 Đăng nhập Gemini</button>
+          <button id="btn-open-options" class="btn btn-secondary">⚙️ Mở Cài đặt</button>
+          <button id="btn-retry" class="btn btn-outline">🔄 Thử lại</button>
+        </div>
+      </div>
+
+      <!-- Result View -->
+      <div id="result-container" class="markdown-body"></div>
+    </main>
+
+    <!-- Footer Action Bar -->
+    <footer class="footer">
+      <div class="footer-left">
+        <span id="provider-badge" class="provider-badge" title="Chế độ AI hiện tại">
+          <span class="dot"></span>
+          <span id="provider-name">Gemini Web</span>
+        </span>
+      </div>
+      <div class="footer-right">
+        <button id="btn-copy" class="btn-action" title="Sao chép tóm tắt">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span id="copy-label">Sao chép</span>
+        </button>
+        <button id="btn-summarize" class="btn btn-primary btn-sm">
+          <span>Tóm tắt</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="lib/marked.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

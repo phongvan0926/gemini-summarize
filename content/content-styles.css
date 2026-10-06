@@ -1,0 +1,70 @@
+/* Gemini Summarize In-Page Styles */
+
+#gemini-summarize-popup-iframe {
+  all: unset !important;
+  position: fixed !important;
+  top: 16px !important;
+  right: 16px !important;
+  width: 520px !important;
+  height: 640px !important;
+  min-width: 380px !important;
+  min-height: 400px !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: calc(100vh - 32px) !important;
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+  z-index: 2147483647 !important;
+  overflow: hidden !important;
+  resize: both !important;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  display: block !important;
+  color-scheme: light;
+}
+
+#gemini-summarize-popup-iframe.hidden {
+  display: none !important;
+}
+
+/* Floating quick summarize button on text selection */
+.gemini-summarize-selection-btn {
+  all: unset;
+  position: absolute;
+  z-index: 2147483646;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 20px;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  user-select: none;
+  animation: geminiBtnPop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.gemini-summarize-selection-btn:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.gemini-summarize-selection-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+@keyframes geminiBtnPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

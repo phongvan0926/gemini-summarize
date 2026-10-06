@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Cài đặt - Gemini Summarize</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar / Nav -->
+    <aside class="sidebar">
+      <div class="logo">
+        <svg class="gemini-icon" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L14.8 9.2L22 12L14.8 14.8L12 22L9.2 14.8L2 12L9.2 9.2L12 2Z" fill="url(#geminiGradOpt)"/>
+          <defs>
+            <linearGradient id="geminiGradOpt" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4E8CFF"/>
+              <stop offset="50%" stop-color="#7B61FF"/>
+              <stop offset="100%" stop-color="#FF5C93"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>Gemini Summarize</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#provider-section" class="active">Nhà cung cấp AI</a>
+        <a href="#general-section">Cài đặt chung</a>
+        <a href="#prompts-section">Mẫu câu hỏi (Prompts)</a>
+        <a href="#about-section">Thông tin tiện ích</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="page-header">
+        <h1>Cài Đặt Tiện Ích</h1>
+        <p class="subtitle">Tùy chỉnh phương thức tóm tắt, mô hình và mẫu câu lệnh theo nhu cầu của bạn.</p>
+      </header>
+
+      <!-- Section: Provider -->
+      <section id="provider-section" class="card">
+        <h2>Nhà cung cấp AI (AI Provider)</h2>
+        <p class="card-desc">Lựa chọn cách thức tiện ích kết nối với mô hình Google Gemini.</p>
+
+        <div class="radio-options">
+          <!-- Web Session Option -->
+          <label class="radio-card" id="card-provider-web">
+            <div class="radio-header">
+              <input type="radio" name="provider" value="web" id="provider-web" checked />
+              <div class="radio-text">
+                <span class="radio-title">Google Gemini Web (Tài khoản đã đăng nhập)</span>
+                <span class="badge-recommended">Khuyên dùng • Miễn phí</span>
+              </div>
+            </div>
+            <p class="radio-desc">
+              Sử dụng trực tiếp tài khoản Google Gemini đã đăng nhập sẵn trên trình duyệt này. Không cần đăng ký API Key, không mất phí.
+            </p>
+            <div class="web-status-box">
+              <button type="button" id="btn-check-login" class="btn btn-sm btn-secondary">
+                🔍 Kiểm tra trạng thái đăng nhập
+              </button>
+              <span id="login-status-text" class="status-text">Chưa kiểm tra</span>
+            </div>
+          </label>
+
+          <!-- API Key Option -->
+          <label class="radio-card" id="card-provider-api">
+            <div class="radio-header">
+              <input type="radio" name="provider" value="api" id="provider-api" />
+              <div class="radio-text">
+                <span class="radio-title">Google Gemini API (Google AI Studio)</span>
+                <span class="badge-subtle">Dành cho nhà phát triển</span>
+              </div>
+            </div>
+            <p class="radio-desc">
+              Sử dụng API Key cá nhân từ Google AI Studio. Tốc độ cực nhanh, ổn định và hỗ trợ chọn các mô hình cụ thể.
+            </p>
+
+            <div id="api-key-config" class="api-config-box hidden">
+              <div class="form-group">
+                <label for="api-key-input">Google AI Studio API Key:</label>
+                <div class="input-password-wrapper">
+                  <input type="password" id="api-key-input" placeholder="AIzaSy..." />
+                  <button type="button" id="btn-toggle-key" class="btn-toggle-vis" title="Hiện/Ẩn">👁️</button>
+                </div>
+                <small>Chưa có API key? <a href="https://aistudio.google.com/app/apikey" target="_blank">Lấy API Key miễn phí tại đây</a> (Hạn mức miễn phí rất cao).</small>
+              </div>
+
+              <div class="form-group">
+                <label for="model-select">Chọn mô hình Gemini:</label>
+                <select id="model-select" class="select-field">
+                  <option value="gemini-2.0-flash" selected>Gemini 2.0 Flash (Khuyên dùng - Siêu nhanh & Thông minh)</option>
+                  <option value="gemini-2.5-flash">Gemini 2.5 Flash (Mới nhất)</option>
+                  <option value="gemini-1.5-flash">Gemini 1.5 Flash (Nhanh & Ổn định)</option>
+                  <option value="gemini-1.5-pro">Gemini 1.5 Pro (Phân tích chuyên sâu)</option>
+                </select>
+              </div>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Section: General Settings -->
+      <section id="general-section" class="card">
+        <h2>Cài đặt chung</h2>
+
+        <div class="form-group">
+          <label for="default-prompt-select">Mẫu tóm tắt mặc định khi mở:</label>
+          <select id="default-prompt-select" class="select-field">
+            <optgroup label="Hệ thống">
+              <option value="auto">🧠 Tự động thông minh (Auto)</option>
+              <option value="bulletpoints">📝 Ý chính (Bullet points)</option>
+              <option value="tldr">⚡ TL;DR (3 câu siêu ngắn)</option>
+              <option value="takeaways">💡 Bài học & Hành động</option>
+              <option value="detailed">📖 Toàn diện & Chi tiết</option>
+              <option value="feynman">👶 Kỹ thuật Feynman (Dễ hiểu)</option>
+              <option value="mindmap">🗺️ Cấu trúc tư duy (Logic)</option>
+              <option value="flashcard">❓ Flashcards & Tự ôn tập</option>
+              <option value="critical">📊 Phân tích phản biện</option>
+            </optgroup>
+            <optgroup id="opt-custom-prompts-group" label="Câu lệnh tùy chỉnh">
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="default-lang">Ngôn ngữ tóm tắt mặc định:</label>
+          <select id="default-lang" class="select-field">
+            <option value="Vietnamese">🇻🇳 Tiếng Việt</option>
+            <option value="English">🇺🇸 English</option>
+            <option value="Chinese">🇨🇳 中文</option>
+            <option value="Japanese">🇯🇵 日本語</option>
+            <option value="Korean">🇰🇷 한국어</option>
+            <option value="French">🇫🇷 Français</option>
+            <option value="Spanish">🇪🇸 Español</option>
+            <option value="German">🇩🇪 Deutsch</option>
+          </select>
+        </div>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label feature-highlight">
+            <input type="checkbox" id="auto-delete-session-toggle" checked />
+            <div class="checkbox-content">
+              <span class="checkbox-title">🧹 Tự động xóa lịch sử chat trên Gemini sau khi tóm tắt</span>
+              <span class="checkbox-desc">Xóa phiên tóm tắt ngay lập tức trên Gemini Web để không để lại hàng loạt đoạn chat rác trong tài khoản Google chính của bạn. (Khuyên dùng)</span>
+            </div>
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="auto-summarize-toggle" checked />
+            <div class="checkbox-content">
+              <span class="checkbox-title">Tự động bắt đầu tóm tắt ngay khi bấm mở tiện ích</span>
+            </div>
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="selection-button-toggle" checked />
+            <div class="checkbox-content">
+              <span class="checkbox-title">Hiển thị nút tóm tắt nổi khi bôi đen đoạn văn bản trên trang</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Section: Prompts -->
+      <section id="prompts-section" class="card">
+        <div class="section-header-flex">
+          <div>
+            <h2>Mẫu câu hỏi & Câu lệnh (Prompts)</h2>
+            <p class="card-desc">Quản lý, thêm câu lệnh cá nhân hoặc lựa chọn các phương pháp đúc kết tri thức tốt nhất.</p>
+          </div>
+          <button type="button" id="btn-add-prompt" class="btn btn-primary btn-sm">
+            ➕ Thêm Prompt mới
+          </button>
+        </div>
+
+        <!-- Custom Prompt Edit/Create Box (hidden by default) -->
+        <div id="prompt-editor-box" class="prompt-editor-card hidden">
+          <h3 id="editor-title">Thêm câu lệnh mới</h3>
+          <div class="form-group">
+            <label for="prompt-name-input">Tên hiển thị (kèm icon):</label>
+            <input type="text" id="prompt-name-input" class="input-text" placeholder="VD: 🎯 3 Ý tưởng đột phá" />
+          </div>
+          <div class="form-group">
+            <label for="prompt-text-input">Nội dung hướng dẫn AI (Prompt):</label>
+            <textarea id="prompt-text-input" rows="4" placeholder="Nhập câu lệnh hướng dẫn Gemini..."></textarea>
+          </div>
+          <div class="editor-buttons">
+            <button type="button" id="btn-save-custom-prompt" class="btn btn-primary btn-sm">Lưu câu lệnh</button>
+            <button type="button" id="btn-cancel-custom-prompt" class="btn btn-secondary btn-sm">Hủy</button>
+          </div>
+        </div>
+
+        <!-- User's Custom Prompts List -->
+        <h3 class="subheading">✨ Câu lệnh tùy chỉnh của bạn</h3>
+        <div id="custom-prompts-list" class="prompt-templates-list mb-4">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Suggested Presets to Add -->
+        <h3 class="subheading">💡 Gợi ý câu lệnh hữu ích (Thêm nhanh vào danh sách)</h3>
+        <div id="suggested-prompts-list" class="suggested-grid mb-4">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- System Built-in Prompts -->
+        <h3 class="subheading">🔒 Các mẫu tích hợp sẵn của hệ thống</h3>
+        <div class="prompt-templates-list">
+          <div class="prompt-item">
+            <div class="prompt-item-header">
+              <strong>🧠 Tự động thông minh (Auto-Detect)</strong>
+              <span class="badge-recommended">Thông minh</span>
+            </div>
+            <div class="prompt-item-body">
+              Tự động nhận diện thể loại nội dung (Tin tức, Hướng dẫn, Phân tích, Ý kiến...), áp dụng mô hình tóm lược tối ưu nhất (5W1H, Checklist thực hành, Luận cứ cốt lõi) và rút ra 1 câu "Golden Nugget".
+            </div>
+          </div>
+
+          <div class="prompt-item">
+            <div class="prompt-item-header">
+              <strong>📝 Ý chính (Bullet points)</strong>
+              <span class="badge-subtle">Hệ thống</span>
+            </div>
+            <div class="prompt-item-body">
+              Tóm tắt súc tích từng ý lớn dưới dạng gạch đầu dòng có emoji phân loại.
+            </div>
+          </div>
+
+          <div class="prompt-item">
+            <div class="prompt-item-header">
+              <strong>⚡ TL;DR (3 câu siêu ngắn)</strong>
+              <span class="badge-subtle">Hệ thống</span>
+            </div>
+            <div class="prompt-item-body">
+              Đúc kết thông điệp cốt lõi nhất của bài viết trong đúng 2-3 câu, đọc xong dưới 15 giây.
+            </div>
+          </div>
+
+          <div class="prompt-item">
+            <div class="prompt-item-header">
+              <strong>💡 Bài học & Hành động (Key Takeaways)</strong>
+              <span class="badge-subtle">Hệ thống</span>
+            </div>
+            <div class="prompt-item-body">
+              Rút ra 3-5 bài học kinh nghiệm sâu sắc hoặc kế hoạch hành động cụ thể có thể ứng dụng ngay.
+            </div>
+          </div>
+
+          <div class="prompt-item">
+            <div class="prompt-item-header">
+              <strong>👶 Kỹ thuật Feynman (Dễ hiểu)</strong>
+              <span class="badge-subtle">Học tập đỉnh cao</span>
+            </div>
+            <div class="prompt-item-body">
+              Giải thích các khái niệm phức tạp bằng ngôn từ đơn giản, ví dụ minh họa và ẩn dụ gần gũi trong đời sống như giải thích cho học sinh hoặc người mới bắt đầu.
+            </div>
+          </div>
+
+          <div class="prompt-item">
+            <div class="prompt-item-header">
+              <strong>🗺️ Cấu trúc tư duy (Mindmap / Logic)</strong>
+              <span class="badge-subtle">Học tập đỉnh cao</span>
+            </div>
+            <div class="prompt-item-body">
+              Tái tạo bài viết thành cấu trúc sơ đồ tư duy phân cấp, làm rõ mối quan hệ nhân quả và mạch lập luận logic.
+            </div>
+          </div>
+
+          <div class="prompt-item">
+            <div class="prompt-item-header">
+              <strong>❓ Flashcards & Tự ôn tập (Active Recall)</strong>
+              <span class="badge-subtle">Học tập đỉnh cao</span>
+            </div>
+            <div class="prompt-item-body">
+              Tạo bộ câu hỏi & trả lời Flashcards giúp người đọc chủ động kiểm tra lại mức độ hiểu và ghi nhớ kiến thức lâu hơn.
+            </div>
+          </div>
+
+          <div class="prompt-item">
+            <div class="prompt-item-header">
+              <strong>📊 Phân tích phản biện (Critical Thinking)</strong>
+              <span class="badge-subtle">Đa chiều</span>
+            </div>
+            <div class="prompt-item-body">
+              Phân tích giả định ngầm, độ tin cậy của số liệu, lỗ hổng lập luận và các góc nhìn đối lập chưa được nhắc tới.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Save Button & Toast -->
+      <div class="save-bar">
+        <button id="btn-save" class="btn btn-primary btn-lg">💾 Lưu tất cả cài đặt</button>
+        <span id="save-feedback" class="save-feedback hidden">Đã lưu cài đặt thành công! ✓</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

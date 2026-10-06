@@ -14,6 +14,8 @@
   const apiKeyInput = document.getElementById('api-key-input');
   const btnToggleKey = document.getElementById('btn-toggle-key');
   const modelSelect = document.getElementById('model-select');
+  const customModelWrapper = document.getElementById('custom-model-wrapper');
+  const customModelInput = document.getElementById('custom-model-input');
   const btnCheckLogin = document.getElementById('btn-check-login');
   const loginStatusText = document.getElementById('login-status-text');
   const defaultLang = document.getElementById('default-lang');
@@ -65,7 +67,7 @@
     const data = await chrome.storage.local.get({
       provider: 'web',
       apiKey: '',
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       selectedLanguage: 'Vietnamese',
       activePrompt: 'auto',
       autoDeleteSession: true,
@@ -83,7 +85,19 @@
     }
 
     apiKeyInput.value = data.apiKey || '';
-    modelSelect.value = data.model || 'gemini-2.0-flash';
+    
+    // Model selection logic
+    const currentModel = data.model || 'gemini-2.5-flash';
+    const isKnownModel = Array.from(modelSelect.options).some(opt => opt.value === currentModel);
+    if (isKnownModel) {
+      modelSelect.value = currentModel;
+      customModelWrapper.classList.add('hidden');
+    } else {
+      modelSelect.value = 'custom';
+      customModelInput.value = currentModel;
+      customModelWrapper.classList.remove('hidden');
+    }
+
     defaultLang.value = data.selectedLanguage || 'Vietnamese';
     autoDeleteSessionToggle.checked = data.autoDeleteSession !== false;
     autoSummarizeToggle.checked = data.autoSummarize !== false;
@@ -94,6 +108,16 @@
     renderSuggestedPrompts();
     updateDefaultPromptSelect(data.activePrompt || 'auto');
   }
+
+  // Model select change handler
+  modelSelect.addEventListener('change', () => {
+    if (modelSelect.value === 'custom') {
+      customModelWrapper.classList.remove('hidden');
+      customModelInput.focus();
+    } else {
+      customModelWrapper.classList.add('hidden');
+    }
+  });
 
   function showApiConfig(show) {
     if (show) {
@@ -337,7 +361,10 @@
   btnSave.addEventListener('click', async () => {
     const provider = providerApi.checked ? 'api' : 'web';
     const apiKey = apiKeyInput.value.trim();
-    const model = modelSelect.value;
+    let model = modelSelect.value;
+    if (model === 'custom') {
+      model = customModelInput.value.trim() || 'gemini-2.5-flash';
+    }
     const selectedLanguage = defaultLang.value;
     const activePrompt = defaultPromptSelect.value;
     const autoDeleteSession = autoDeleteSessionToggle.checked;

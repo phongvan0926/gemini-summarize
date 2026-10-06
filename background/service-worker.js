@@ -135,7 +135,7 @@ chrome.runtime.onConnect.addListener((port) => {
         const settings = await chrome.storage.local.get({
           provider: "web",
           apiKey: "",
-          model: "gemini-2.5-flash",
+          model: "gemini-3.8-flash",
           autoDeleteSession: true
         });
 

@@ -552,6 +552,22 @@ body {
   font-size: 12px;
 }
 
+.btn-xs {
+  padding: 4px 10px;
+  font-size: 11.5px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-outline {
+  background: #ffffff;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+  background: #f5f3ff;
+}
+
 .btn-lg {
   padding: 10px 24px;
   font-size: 14.5px;

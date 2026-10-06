@@ -16,6 +16,8 @@
   const modelSelect = document.getElementById('model-select');
   const customModelWrapper = document.getElementById('custom-model-wrapper');
   const customModelInput = document.getElementById('custom-model-input');
+  const btnFetchModels = document.getElementById('btn-fetch-models');
+  const fetchModelsStatus = document.getElementById('fetch-models-status');
   const btnCheckLogin = document.getElementById('btn-check-login');
   const loginStatusText = document.getElementById('login-status-text');
   const defaultLang = document.getElementById('default-lang');
@@ -67,13 +69,14 @@
     const data = await chrome.storage.local.get({
       provider: 'web',
       apiKey: '',
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       selectedLanguage: 'Vietnamese',
       activePrompt: 'auto',
       autoDeleteSession: true,
       autoSummarize: true,
       showSelectionButton: true,
-      customPrompts: []
+      customPrompts: [],
+      cachedApiModels: null
     });
 
     if (data.provider === 'api') {
@@ -86,8 +89,13 @@
 
     apiKeyInput.value = data.apiKey || '';
     
+    // If we have cached API models from a previous live fetch, populate them
+    if (data.cachedApiModels && Array.isArray(data.cachedApiModels) && data.cachedApiModels.length > 0) {
+      populateModelSelectWithFetched(data.cachedApiModels, false);
+    }
+
     // Model selection logic
-    const currentModel = data.model || 'gemini-2.5-flash';
+    const currentModel = data.model || 'gemini-3.8-flash';
     const isKnownModel = Array.from(modelSelect.options).some(opt => opt.value === currentModel);
     if (isKnownModel) {
       modelSelect.value = currentModel;
@@ -118,6 +126,139 @@
       customModelWrapper.classList.add('hidden');
     }
   });
+
+  // --- Real-time Models Fetch from Google API ---
+  function showFetchStatus(msg, type) {
+    if (!fetchModelsStatus) return;
+    fetchModelsStatus.style.display = 'block';
+    fetchModelsStatus.textContent = msg;
+    if (type === 'error') {
+      fetchModelsStatus.style.color = '#ef4444';
+    } else if (type === 'ok') {
+      fetchModelsStatus.style.color = '#10b981';
+      setTimeout(() => { fetchModelsStatus.style.display = 'none'; }, 4000);
+    } else {
+      fetchModelsStatus.style.color = '#3b82f6';
+    }
+  }
+
+  function getModelScore(id) {
+    // Priority order: Gemini 3.8 > 3.5 > 3.1 > 3-flash > flash-latest > 3.x > 2.5 > 2.0
+    if (id.includes('3.8-flash')) return 100;
+    if (id.includes('3.5-flash-lite')) return 95;
+    if (id.includes('3.1-pro')) return 90;
+    if (id.includes('3-flash')) return 85;
+    if (id.includes('flash-latest')) return 80;
+    if (id.startsWith('gemini-3')) return 75;
+    if (id.startsWith('gemini-2.5-flash')) return 70;
+    if (id.startsWith('gemini-2.5-pro')) return 65;
+    if (id.startsWith('gemini-2.5')) return 60;
+    if (id.startsWith('gemini-2.0')) return 50;
+    return 10;
+  }
+
+  function populateModelSelectWithFetched(models, preserveSelection = true) {
+    const currentVal = modelSelect.value;
+    modelSelect.innerHTML = '';
+
+    const groupLatest = document.createElement('optgroup');
+    groupLatest.label = '🌟 Danh sách thời gian thực từ Google AI Studio (Mới nhất)';
+
+    models.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      let label = `${m.displayName || m.id} (${m.id})`;
+      if (m.id === 'gemini-3.8-flash') label = `⭐ ${m.displayName || m.id} (Flagship • Khuyên dùng)`;
+      else if (m.id === 'gemini-3.5-flash-lite') label = `🚀 ${m.displayName || m.id} (Tiết kiệm & Nhanh • Khuyên dùng)`;
+      else if (m.id.includes('3.1-pro')) label = `🧠 ${m.displayName || m.id} (Suy luận sâu)`;
+      opt.textContent = label;
+      groupLatest.appendChild(opt);
+    });
+
+    const groupCustom = document.createElement('optgroup');
+    groupCustom.label = '✍️ Tùy chỉnh';
+    const optCustom = document.createElement('option');
+    optCustom.value = 'custom';
+    optCustom.textContent = '✍️ Tự nhập Model ID khác...';
+    groupCustom.appendChild(optCustom);
+
+    modelSelect.appendChild(groupLatest);
+    modelSelect.appendChild(groupCustom);
+
+    if (preserveSelection && currentVal) {
+      const exists = Array.from(modelSelect.options).some(o => o.value === currentVal);
+      if (exists) {
+        modelSelect.value = currentVal;
+      } else {
+        modelSelect.value = models[0]?.id || 'gemini-3.8-flash';
+      }
+    }
+  }
+
+  async function fetchModelsFromGoogleApi(apiKey, showFeedback = true) {
+    if (!apiKey) {
+      if (showFeedback) {
+        showFetchStatus('⚠️ Vui lòng nhập API Key ở trên trước khi quét model.', 'error');
+      }
+      return null;
+    }
+
+    if (showFeedback) {
+      showFetchStatus('⏳ Đang kết nối Google AI Studio quét model thời gian thực...', 'loading');
+    }
+
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error?.message || `HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (!data.models || !Array.isArray(data.models)) {
+        throw new Error('Dữ liệu trả về không đúng định dạng');
+      }
+
+      // Filter text-generation models
+      const textModels = data.models
+        .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+        .map(m => {
+          const id = m.name.replace(/^models\//, '');
+          return {
+            id,
+            displayName: m.displayName || id,
+            description: m.description || ''
+          };
+        })
+        .filter(m => !m.id.includes('embedding') && !m.id.includes('aqa'));
+
+      textModels.sort((a, b) => getModelScore(b.id) - getModelScore(a.id));
+
+      if (textModels.length === 0) {
+        throw new Error('Không tìm thấy model nào hỗ trợ tạo văn bản.');
+      }
+
+      populateModelSelectWithFetched(textModels, true);
+      await chrome.storage.local.set({ cachedApiModels: textModels });
+
+      if (showFeedback) {
+        showFetchStatus(`✅ Đã tìm thấy ${textModels.length} mô hình thời gian thực từ Google!`, 'ok');
+      }
+      return textModels;
+    } catch (err) {
+      console.warn('[Options] Fetch models error:', err);
+      if (showFeedback) {
+        showFetchStatus(`❌ Không thể lấy danh sách: ${err.message}`, 'error');
+      }
+      return null;
+    }
+  }
+
+  if (btnFetchModels) {
+    btnFetchModels.addEventListener('click', () => {
+      fetchModelsFromGoogleApi(apiKeyInput.value.trim(), true);
+    });
+  }
 
   function showApiConfig(show) {
     if (show) {
@@ -363,7 +504,7 @@
     const apiKey = apiKeyInput.value.trim();
     let model = modelSelect.value;
     if (model === 'custom') {
-      model = customModelInput.value.trim() || 'gemini-2.5-flash';
+      model = customModelInput.value.trim() || 'gemini-3.8-flash';
     }
     const selectedLanguage = defaultLang.value;
     const activePrompt = defaultPromptSelect.value;

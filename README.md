@@ -14,7 +14,7 @@ Tiện ích mở rộng trình duyệt Chrome mạnh mẽ cho phép **tóm tắt
 2. **Dùng ngay tài khoản Gemini đã đăng nhập (Web Session - 100% Miễn phí)**:
    - Tận dụng phiên đăng nhập Google Gemini (`gemini.google.com`) có sẵn trên trình duyệt.
    - Không cần đăng ký API Key, không giới hạn thẻ tín dụng, không mất phí.
-   - Hỗ trợ tùy chọn **Google AI Studio API Key** với các mô hình thế hệ mới nhất (**Gemini 2.5 Flash, Gemini 2.5 Pro, Gemini 2.0 Flash Thinking**) cùng tính năng **tự do nhập bất kỳ Model ID mới nào của Google (Custom Model ID)**, đảm bảo không bao giờ bị lỗi thời.
+   - Hỗ trợ tùy chọn **Google AI Studio API Key** với các mô hình thế hệ mới nhất (**Gemini 3.8 Flash, Gemini 3.5 Flash-Lite, Gemini 3.1 Pro**) cùng tính năng **Quét model thời gian thực qua Google API (Real-time Live Fetch)** và **tự do nhập bất kỳ Model ID tùy chỉnh nào**, đảm bảo luôn cập nhật các model mới nhất của Google.
 
 3. **🧹 Tự động xóa sạch Session rác trên Gemini Web (Auto Session Cleanup)**:
    - Sau khi tạo xong nội dung tóm tắt, tiện ích tự động gọi RPC của Google Gemini để dọn dẹp sạch sẽ cuộc hội thoại đó khỏi tài khoản.

@@ -175,7 +175,7 @@
   async function loadSettingsAndSummarize() {
     const settings = await chrome.storage.local.get({
       provider: 'web',
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       selectedLanguage: 'Vietnamese',
       activePrompt: 'auto',
       customPrompts: []
